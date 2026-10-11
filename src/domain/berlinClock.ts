@@ -10,6 +10,18 @@ const HOUR_ROW_LAMP_COUNT = 4
 const HOURS_PER_FIVE_HOUR_BLOCK = 5
 const MIN_HOURS = 0
 const MAX_HOURS = 23
+const MIN_SECONDS = 0
+const MAX_SECONDS = 59
+const SECONDS_BLINK_PERIOD = 2
+
+export type BerlinClockState = {
+  readonly seconds: LampState
+  readonly fiveHours: readonly LampState[]
+  readonly singleHours: readonly LampState[]
+  readonly fiveMinutes: readonly LampState[]
+  readonly singleMinutes: readonly LampState[]
+}
+
 
 function validateMinutes(minutes: number): void {
   if (
@@ -105,6 +117,26 @@ export function fiveHours(hours: number): readonly LampState[] {
 }
 
 export function secondsLamp(seconds: number): LampState {
+  if (
+    !Number.isInteger(seconds) ||
+    seconds < MIN_SECONDS ||
+    seconds > MAX_SECONDS
+  ) {
+    throw new RangeError('Seconds must be an integer between 0 and 59')
+  }
+
+  const isEvenSecond = seconds % SECONDS_BLINK_PERIOD === 0
+
+  return isEvenSecond ? 'YELLOW' : 'OFF'
+}
+
+export function toBerlinClock(
+  hours: number,
+  minutes: number,
+  seconds: number,
+): BerlinClockState {
+  void hours
+  void minutes
   void seconds
   throw new Error('Not implemented')
 }

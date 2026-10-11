@@ -8,3 +8,52 @@
 .app p {
   text-align: center;
 }
+
+.time-form {
+  display: grid;
+  gap: 0.5rem;
+  margin-block: 1.5rem;
+}
+
+.time-form__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.time-form input,
+.time-form button {
+  font: inherit;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #64748b;
+  border-radius: 0.375rem;
+}
+
+.time-form input {
+  flex: 1;
+  min-width: 0;
+  color: #0f172a;
+  background-color: #ffffff;
+}
+
+.time-form button {
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #1d4ed8;
+}
+
+.time-form input:focus-visible,
+.time-form button:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 2px;
+}
+
+.time-form input[aria-invalid='true'] {
+  border-color: #fca5a5;
+}
+
+.time-form .time-form__error {
+  margin: 0;
+  color: #fca5a5;
+  text-align: left;
+}

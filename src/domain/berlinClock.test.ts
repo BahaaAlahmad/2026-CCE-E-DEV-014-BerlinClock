@@ -49,4 +49,18 @@ describe('singleMinutes', () => {
       'YELLOW',
     ])
   })
+
+    it.each([
+    { minutes: -1 },
+    { minutes: 60 },
+    { minutes: 1.5 },
+    { minutes: Number.NaN },
+    { minutes: Number.POSITIVE_INFINITY },
+    { minutes: Number.NEGATIVE_INFINITY },
+  ])('rejects invalid minutes: $minutes', ({ minutes }) => {
+    expect(() => singleMinutes(minutes)).toThrow(
+      'Minutes must be an integer between 0 and 59',
+    )
+  })
+  
 })

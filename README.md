@@ -1,9 +1,9 @@
 # Berlin Clock
 
-A Berlin Clock kata implemented with React and TypeScript using
+A Berlin Clock kata built with React and TypeScript using
 test-driven development.
 
-## Planned features
+## Features planned
 
 - Convert a manually entered time in HH:mm:ss format.
 - Display browser-local system time and update every second.
@@ -14,40 +14,96 @@ test-driven development.
 
 Lamps illuminate from left to right.
 
-- Seconds: one yellow lamp, on for even seconds and off for odd seconds.
-- Five-hour row: four red lamps, each representing five hours.
-- Single-hour row: four red lamps, each representing one hour.
-- Five-minute row: eleven lamps, each representing five minutes.
-  The third, sixth, and ninth lamps are red; the others are yellow.
-- Single-minute row: four yellow lamps, each representing one minute.
+| Row | Lamps | Meaning | Colors when illuminated |
+| --- | --- | --- | --- |
+| Seconds | 1 | On for even seconds; off for odd seconds | Yellow |
+| Five hours | 4 | Each lamp represents five hours | Red |
+| Single hours | 4 | Each lamp represents one hour | Red |
+| Five minutes | 11 | Each lamp represents five minutes | Yellow; lamps 3, 6, and 9 are red |
+| Single minutes | 4 | Each lamp represents one minute | Yellow |
 
 ## Time conventions
 
 - Manual input uses the 24-hour HH:mm:ss format.
 - Hours range from 00 to 23.
 - Minutes and seconds range from 00 to 59.
-- Manual time remains fixed until the user submits another time.
+- Manual time remains fixed until another time is submitted.
 - System time uses the browser's local timezone.
-- The seconds lamp indicates parity, not the exact second value.
+- The seconds lamp indicates whether seconds are even or odd.
+  It does not encode the exact second value.
 
-## Implementation scope
+## Prerequisites
 
-This implementation uses React and TypeScript only.
+- Node.js 24
+- npm
 
-The assignment email also requests a Java/Spring backend.
-Acceptance of a frontend-only submission has not been confirmed.
+## Install dependencies
+
+From the repository root:
+
+```bash
+npm ci
+```
+
+The committed package-lock.json records the dependency versions.
+
+## Run locally
+
+```bash
+npm run dev
+```
+
+Open the local URL printed in the terminal.
+
+To stop the development server, press Ctrl+C.
+
+## Check code quality
+
+```bash
+npm run lint
+```
+
+## Build for production
+
+```bash
+npm run build
+```
+
+The build output is generated in the dist directory.
+
+## Preview the production build
+
+```bash
+npm run build
+npm run preview
+```
+
+Open the local URL printed in the terminal.
 
 ## Development approach
 
-- Write and run a failing behavioral test.
-- Implement the smallest change that makes it pass.
-- Refactor when it improves clarity, keeping tests passing.
-- Record these steps in small, descriptive commits.
-- Keep clock conversion independent of React components.
+Development follows the TDD cycle:
 
-## Project status
+1. Write and run a failing test for a specific behavior.
+2. Implement the smallest change that makes the test pass.
+3. Refactor when it improves clarity, keeping tests passing.
 
-Initial repository setup. The application has not been scaffolded yet.
+Changes are recorded in small, descriptive commits.
+Clock conversion logic will remain independent of React components.
 
-Setup, run, build, and test instructions will be added as the
-corresponding tooling is introduced.
+## Run tests
+
+Run the test suite once:
+
+```bash
+npm test
+```
+
+Run tests continuously during development:
+
+```bash
+npm run test:watch
+```
+
+Tests are named *.test.ts or *.test.tsx and kept beside the code
+they specify.

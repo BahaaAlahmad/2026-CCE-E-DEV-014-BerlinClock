@@ -135,8 +135,11 @@ export function toBerlinClock(
   minutes: number,
   seconds: number,
 ): BerlinClockState {
-  void hours
-  void minutes
-  void seconds
-  throw new Error('Not implemented')
+  return {
+    seconds: secondsLamp(seconds),
+    fiveHours: fiveHours(hours),
+    singleHours: singleHours(hours),
+    fiveMinutes: fiveMinutes(minutes),
+    singleMinutes: singleMinutes(minutes),
+  }
 }

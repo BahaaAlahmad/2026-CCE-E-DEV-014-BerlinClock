@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { fiveMinutes, singleMinutes } from './berlinClock'
+import {
+  fiveHours,
+  fiveMinutes,
+  singleHours,
+  singleMinutes,
+} from './berlinClock'
 
 describe('singleMinutes', () => {
   it('turns all four lamps off at zero minutes', () => {
@@ -101,6 +106,62 @@ describe('fiveMinutes', () => {
   ])('rejects invalid minutes: $minutes', ({ minutes }) => {
     expect(() => fiveMinutes(minutes)).toThrow(
       'Minutes must be an integer between 0 and 59',
+    )
+  })
+})
+
+describe('singleHours', () => {
+  it.each([
+    { hours: 0, expected: ['OFF', 'OFF', 'OFF', 'OFF'] },
+    { hours: 1, expected: ['RED', 'OFF', 'OFF', 'OFF'] },
+    { hours: 2, expected: ['RED', 'RED', 'OFF', 'OFF'] },
+    { hours: 3, expected: ['RED', 'RED', 'RED', 'OFF'] },
+    { hours: 4, expected: ['RED', 'RED', 'RED', 'RED'] },
+    { hours: 5, expected: ['OFF', 'OFF', 'OFF', 'OFF'] },
+    { hours: 14, expected: ['RED', 'RED', 'RED', 'RED'] },
+    { hours: 23, expected: ['RED', 'RED', 'RED', 'OFF'] },
+  ])('shows $expected at $hours hours', ({ hours, expected }) => {
+    expect(singleHours(hours)).toEqual(expected)
+  })
+
+  it.each([
+    { hours: -1 },
+    { hours: 24 },
+    { hours: 1.5 },
+    { hours: Number.NaN },
+    { hours: Number.POSITIVE_INFINITY },
+    { hours: Number.NEGATIVE_INFINITY },
+  ])('rejects invalid hours: $hours', ({ hours }) => {
+    expect(() => singleHours(hours)).toThrow(
+      'Hours must be an integer between 0 and 23',
+    )
+  })
+})
+
+describe('fiveHours', () => {
+  it.each([
+    { hours: 0, expected: ['OFF', 'OFF', 'OFF', 'OFF'] },
+    { hours: 4, expected: ['OFF', 'OFF', 'OFF', 'OFF'] },
+    { hours: 5, expected: ['RED', 'OFF', 'OFF', 'OFF'] },
+    { hours: 9, expected: ['RED', 'OFF', 'OFF', 'OFF'] },
+    { hours: 10, expected: ['RED', 'RED', 'OFF', 'OFF'] },
+    { hours: 15, expected: ['RED', 'RED', 'RED', 'OFF'] },
+    { hours: 20, expected: ['RED', 'RED', 'RED', 'RED'] },
+    { hours: 23, expected: ['RED', 'RED', 'RED', 'RED'] },
+  ])('shows $expected at $hours hours', ({ hours, expected }) => {
+    expect(fiveHours(hours)).toEqual(expected)
+  })
+
+  it.each([
+    { hours: -1 },
+    { hours: 24 },
+    { hours: 1.5 },
+    { hours: Number.NaN },
+    { hours: Number.POSITIVE_INFINITY },
+    { hours: Number.NEGATIVE_INFINITY },
+  ])('rejects invalid hours: $hours', ({ hours }) => {
+    expect(() => fiveHours(hours)).toThrow(
+      'Hours must be an integer between 0 and 23',
     )
   })
 })

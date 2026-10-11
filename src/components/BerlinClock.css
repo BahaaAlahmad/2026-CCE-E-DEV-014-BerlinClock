@@ -1,0 +1,47 @@
+.berlin-clock {
+  --lamp-off-color: #374151;
+  --lamp-red-color: #dc2626;
+  --lamp-yellow-color: #facc15;
+  --lamp-border-color: #64748b;
+  --lamp-gap: 0.5rem;
+  --lamp-height: 3rem;
+  --lamp-radius: 0.375rem;
+  --seconds-lamp-size: 4rem;
+
+  display: grid;
+  gap: var(--lamp-gap);
+  width: 100%;
+}
+
+.berlin-clock__row {
+  display: flex;
+  gap: var(--lamp-gap);
+}
+
+.lamp {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  height: var(--lamp-height);
+  border: 1px solid var(--lamp-border-color);
+  border-radius: var(--lamp-radius);
+}
+
+.lamp--off {
+  background-color: var(--lamp-off-color);
+}
+
+.lamp--red {
+  background-color: var(--lamp-red-color);
+}
+
+.lamp--yellow {
+  background-color: var(--lamp-yellow-color);
+}
+
+.lamp--seconds {
+  justify-self: center;
+  width: var(--seconds-lamp-size);
+  height: var(--seconds-lamp-size);
+  border-radius: 50%;
+}

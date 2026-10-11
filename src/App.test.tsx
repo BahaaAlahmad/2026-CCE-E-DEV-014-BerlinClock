@@ -1,6 +1,13 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest'
 import App from './App'
 
 describe('manual time entry', () => {
@@ -120,5 +127,123 @@ describe('manual time entry', () => {
     expect(
       screen.getByRole('img', { name: 'Seconds lamp: yellow' }),
     ).toBeVisible()
+  })
+})
+
+describe('system time mode', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 9, 12, 10, 20, 30))
+  })
+
+  afterEach(() => {
+    vi.clearAllTimers()
+    vi.useRealTimers()
+  })
+
+  it('shows local system time immediately and updates every second', async () => {
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    })
+    render(<App />)
+
+    await user.click(
+      screen.getByRole('checkbox', { name: 'Use system time' }),
+    )
+
+    expect(screen.getByText('Displayed time: 10:20:30')).toBeVisible()
+    expect(
+      screen.getByRole('img', { name: 'Seconds lamp: yellow' }),
+    ).toBeVisible()
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+
+    expect(screen.getByText('Displayed time: 10:20:31')).toBeVisible()
+    expect(
+      screen.getByRole('img', { name: 'Seconds lamp: off' }),
+    ).toBeVisible()
+
+    expect(
+      screen.getByRole('textbox', { name: 'Time (HH:mm:ss)' }),
+    ).toBeDisabled()
+    expect(
+      screen.getByRole('button', { name: 'Convert time' }),
+    ).toBeDisabled()
+  })
+
+  it('updates the time and lamps across midnight', async () => {
+    vi.setSystemTime(new Date(2026, 9, 12, 23, 59, 59))
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    })
+    render(<App />)
+
+    await user.click(
+      screen.getByRole('checkbox', { name: 'Use system time' }),
+    )
+
+    expect(screen.getByText('Displayed time: 23:59:59')).toBeVisible()
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+
+    expect(screen.getByText('Displayed time: 00:00:00')).toBeVisible()
+    expect(
+      screen.getByRole('img', { name: 'Seconds lamp: yellow' }),
+    ).toBeVisible()
+
+    for (const name of [
+      'Five hours',
+      'Single hours',
+      'Five minutes',
+      'Single minutes',
+    ]) {
+      const row = screen.getByRole('group', { name })
+
+      expect(
+        within(row)
+          .getAllByRole('img')
+          .map((lamp) => lamp.getAttribute('aria-label')),
+      ).toEqual(
+        within(row)
+          .getAllByRole('img')
+          .map((_, index) => `Lamp ${index + 1}: off`),
+      )
+    }
+  })
+
+  it('restores manual time, stops live updates, and resumes with fresh system time', async () => {
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    })
+    render(<App />)
+
+    const input = screen.getByRole('textbox', { name: 'Time (HH:mm:ss)' })
+    const toggle = screen.getByRole('checkbox', { name: 'Use system time' })
+
+    await user.clear(input)
+    await user.type(input, '11:37:01')
+    await user.click(screen.getByRole('button', { name: 'Convert time' }))
+
+    await user.click(toggle)
+    expect(screen.getByText('Displayed time: 10:20:30')).toBeVisible()
+
+    await user.click(toggle)
+    expect(screen.getByText('Displayed time: 11:37:01')).toBeVisible()
+    expect(input).toBeEnabled()
+    expect(input).toHaveValue('11:37:01')
+
+    act(() => {
+      vi.advanceTimersByTime(5000)
+    })
+
+    expect(screen.getByText('Displayed time: 11:37:01')).toBeVisible()
+
+    await user.click(toggle)
+    expect(screen.getByText('Displayed time: 10:20:35')).toBeVisible()
   })
 })

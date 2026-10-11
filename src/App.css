@@ -57,3 +57,26 @@
   color: #fca5a5;
   text-align: left;
 }
+
+.system-time-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.system-time-control input {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.system-time-control input:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 2px;
+}
+
+.time-form input:disabled,
+.time-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

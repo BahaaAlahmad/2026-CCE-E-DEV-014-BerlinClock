@@ -93,6 +93,10 @@ Clock conversion logic will remain independent of React components.
 
 ## Run tests
 
+Tests use Vitest. React component tests use React Testing Library,
+user-event, and jest-dom in a jsdom environment.
+Component tests specify visible behavior and user interactions.
+
 Run the test suite once:
 
 ```bash

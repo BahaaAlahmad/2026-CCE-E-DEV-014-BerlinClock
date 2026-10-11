@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { singleMinutes } from './berlinClock'
+import { fiveMinutes, singleMinutes } from './berlinClock'
 
 describe('singleMinutes', () => {
   it('turns all four lamps off at zero minutes', () => {
@@ -63,4 +63,44 @@ describe('singleMinutes', () => {
     )
   })
   
+})
+
+describe('fiveMinutes', () => {
+  it.each([
+    { minutes: 0, expected: 'OOOOOOOOOOO' },
+    { minutes: 4, expected: 'OOOOOOOOOOO' },
+    { minutes: 5, expected: 'YOOOOOOOOOO' },
+    { minutes: 14, expected: 'YYOOOOOOOOO' },
+    { minutes: 15, expected: 'YYROOOOOOOO' },
+    { minutes: 23, expected: 'YYRYOOOOOOO' },
+    { minutes: 30, expected: 'YYRYYROOOOO' },
+    { minutes: 35, expected: 'YYRYYRYOOOO' },
+    { minutes: 45, expected: 'YYRYYRYYROO' },
+    { minutes: 59, expected: 'YYRYYRYYRYY' },
+  ])('shows $expected at $minutes minutes', ({ minutes, expected }) => {
+    const states = {
+      O: 'OFF',
+      Y: 'YELLOW',
+      R: 'RED',
+    } as const
+
+    const expectedLamps = Array.from(expected, (symbol) => {
+      return states[symbol as keyof typeof states]
+    })
+
+    expect(fiveMinutes(minutes)).toEqual(expectedLamps)
+  })
+
+  it.each([
+    { minutes: -1 },
+    { minutes: 60 },
+    { minutes: 1.5 },
+    { minutes: Number.NaN },
+    { minutes: Number.POSITIVE_INFINITY },
+    { minutes: Number.NEGATIVE_INFINITY },
+  ])('rejects invalid minutes: $minutes', ({ minutes }) => {
+    expect(() => fiveMinutes(minutes)).toThrow(
+      'Minutes must be an integer between 0 and 59',
+    )
+  })
 })

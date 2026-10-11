@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   fiveHours,
   fiveMinutes,
+  secondsLamp,
   singleHours,
   singleMinutes,
 } from './berlinClock'
@@ -162,6 +163,32 @@ describe('fiveHours', () => {
   ])('rejects invalid hours: $hours', ({ hours }) => {
     expect(() => fiveHours(hours)).toThrow(
       'Hours must be an integer between 0 and 23',
+    )
+  })
+})
+
+describe('secondsLamp', () => {
+  it.each([
+    { seconds: 0, expected: 'YELLOW' },
+    { seconds: 1, expected: 'OFF' },
+    { seconds: 2, expected: 'YELLOW' },
+    { seconds: 37, expected: 'OFF' },
+    { seconds: 58, expected: 'YELLOW' },
+    { seconds: 59, expected: 'OFF' },
+  ])('shows $expected at $seconds seconds', ({ seconds, expected }) => {
+    expect(secondsLamp(seconds)).toBe(expected)
+  })
+
+  it.each([
+    { seconds: -1 },
+    { seconds: 60 },
+    { seconds: 1.5 },
+    { seconds: Number.NaN },
+    { seconds: Number.POSITIVE_INFINITY },
+    { seconds: Number.NEGATIVE_INFINITY },
+  ])('rejects invalid seconds: $seconds', ({ seconds }) => {
+    expect(() => secondsLamp(seconds)).toThrow(
+      'Seconds must be an integer between 0 and 59',
     )
   })
 })

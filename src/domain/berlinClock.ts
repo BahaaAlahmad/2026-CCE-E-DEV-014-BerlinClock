@@ -31,15 +31,27 @@ function validateHours(hours: number): void {
   }
 }
 
+function createUniformRow(
+  lampCount: number,
+  illuminatedLampCount: number,
+  color: Exclude<LampState, 'OFF'>,
+): readonly LampState[] {
+  return Array.from(
+    { length: lampCount },
+    (_, index): LampState =>
+      index < illuminatedLampCount ? color : 'OFF',
+  )
+}
+
 export function singleMinutes(minutes: number): readonly LampState[] {
   validateMinutes(minutes)
 
   const illuminatedLampCount = minutes % MINUTES_PER_FIVE_MINUTE_BLOCK
 
-  return Array.from(
-    { length: SINGLE_MINUTE_LAMP_COUNT },
-    (_, index): LampState =>
-      index < illuminatedLampCount ? 'YELLOW' : 'OFF',
+  return createUniformRow(
+    SINGLE_MINUTE_LAMP_COUNT,
+    illuminatedLampCount,
+    'YELLOW',
   )
 }
 
@@ -71,10 +83,10 @@ export function singleHours(hours: number): readonly LampState[] {
 
   const illuminatedLampCount = hours % HOURS_PER_FIVE_HOUR_BLOCK
 
-  return Array.from(
-    { length: HOUR_ROW_LAMP_COUNT },
-    (_, index): LampState =>
-      index < illuminatedLampCount ? 'RED' : 'OFF',
+  return createUniformRow(
+    HOUR_ROW_LAMP_COUNT,
+    illuminatedLampCount,
+    'RED',
   )
 }
 
@@ -85,9 +97,14 @@ export function fiveHours(hours: number): readonly LampState[] {
     hours / HOURS_PER_FIVE_HOUR_BLOCK,
   )
 
-  return Array.from(
-    { length: HOUR_ROW_LAMP_COUNT },
-    (_, index): LampState =>
-      index < illuminatedLampCount ? 'RED' : 'OFF',
+  return createUniformRow(
+    HOUR_ROW_LAMP_COUNT,
+    illuminatedLampCount,
+    'RED',
   )
+}
+
+export function secondsLamp(seconds: number): LampState {
+  void seconds
+  throw new Error('Not implemented')
 }

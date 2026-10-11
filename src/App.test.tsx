@@ -132,9 +132,12 @@ describe('manual time entry', () => {
 
 describe('system time mode', () => {
   beforeEach(() => {
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date(2026, 9, 12, 10, 20, 30))
+  vi.useFakeTimers({
+    toFake: ['Date', 'setInterval', 'clearInterval'],
   })
+
+  vi.setSystemTime(new Date(2026, 9, 12, 10, 20, 30))
+})
 
   afterEach(() => {
     vi.clearAllTimers()
@@ -142,9 +145,7 @@ describe('system time mode', () => {
   })
 
   it('shows local system time immediately and updates every second', async () => {
-    const user = userEvent.setup({
-      advanceTimers: vi.advanceTimersByTime,
-    })
+    const user = userEvent.setup()
     render(<App />)
 
     await user.click(
@@ -176,9 +177,7 @@ describe('system time mode', () => {
   it('updates the time and lamps across midnight', async () => {
     vi.setSystemTime(new Date(2026, 9, 12, 23, 59, 59))
 
-    const user = userEvent.setup({
-      advanceTimers: vi.advanceTimersByTime,
-    })
+    const user = userEvent.setup()
     render(<App />)
 
     await user.click(
@@ -217,9 +216,7 @@ describe('system time mode', () => {
   })
 
   it('restores manual time, stops live updates, and resumes with fresh system time', async () => {
-    const user = userEvent.setup({
-      advanceTimers: vi.advanceTimersByTime,
-    })
+    const user = userEvent.setup()
     render(<App />)
 
     const input = screen.getByRole('textbox', { name: 'Time (HH:mm:ss)' })

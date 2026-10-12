@@ -1,113 +1,173 @@
 # Berlin Clock
 
-A Berlin Clock kata built with React and TypeScript using
-test-driven development.
+A Berlin Clock application built with React and TypeScript.
 
-## Features planned
+## Features
 
-- Convert a manually entered time in HH:mm:ss format.
-- Display browser-local system time and update every second.
+- Convert a manually entered time into Berlin Clock lamp states.
+- Display browser-local system time, updated every second.
 - Switch between manual and system-time modes.
-- Show clear errors for invalid input.
-
-## Clock rules
-
-Lamps illuminate from left to right.
-
-| Row | Lamps | Meaning | Colors when illuminated |
-| --- | --- | --- | --- |
-| Seconds | 1 | On for even seconds; off for odd seconds | Yellow |
-| Five hours | 4 | Each lamp represents five hours | Red |
-| Single hours | 4 | Each lamp represents one hour | Red |
-| Five minutes | 11 | Each lamp represents five minutes | Yellow; lamps 3, 6, and 9 are red |
-| Single minutes | 4 | Each lamp represents one minute | Yellow |
-
-## Time conventions
-
-- Manual input uses the 24-hour HH:mm:ss format.
-- Hours range from 00 to 23.
-- Minutes and seconds range from 00 to 59.
-- Manual time remains fixed until another time is submitted.
-- System time uses the browser's local timezone.
-- The seconds lamp indicates whether seconds are even or odd.
-  It does not encode the exact second value.
+- Validate input and show accessible error messages.
+- Preserve the last submitted manual time when switching modes.
 
 ## Prerequisites
 
 - Node.js 24
 - npm
 
-## Install dependencies
+## Getting started
 
-From the repository root:
+Clone the repository:
+
+```bash
+git clone https://github.com/BahaaAlahmad/2026-CCE-E-DEV-014-BerlinClock.git
+cd 2026-CCE-E-DEV-014-BerlinClock
+```
+
+Install the dependencies recorded in package-lock.json:
 
 ```bash
 npm ci
 ```
 
-The committed package-lock.json records the dependency versions.
-
-## Run locally
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
 Open the local URL printed in the terminal.
+Press Ctrl+C to stop the server.
 
-To stop the development server, press Ctrl+C.
+## Using the application
 
-## Check code quality
+### Manual time
+
+Enter a time in HH:mm:ss format and select Convert time,
+or press Enter.
+
+Hours must be between 00 and 23.
+Minutes and seconds must be between 00 and 59.
+Whitespace and incomplete formats are rejected.
+
+Editing the input does not change the clock until submission.
+Invalid submissions show an error and preserve the last valid display.
+
+### System time
+
+Select Use system time to display the browser's local time.
+The display updates every second, and manual controls are disabled.
+
+Deselect Use system time to restore the last submitted manual time.
+
+The initial manual example is 16:50:06.
+
+## Berlin Clock rules
+
+Lamps illuminate from left to right.
+
+| Row | Lamps | Meaning | Illuminated colors |
+| --- | --- | --- | --- |
+| Seconds | 1 | On for even seconds; off for odd seconds | Yellow |
+| Five hours | 4 | Five hours per lamp | Red |
+| Single hours | 4 | One remaining hour per lamp | Red |
+| Five minutes | 11 | Five minutes per lamp | Yellow; positions 3, 6, and 9 are red |
+| Single minutes | 4 | One remaining minute per lamp | Yellow |
+
+For example, 16:50:06 produces:
+
+- Seconds: yellow.
+- Five hours: three red lamps, then one off.
+- Single hours: one red lamp, then three off.
+- Five minutes: ten illuminated lamps, then one off.
+  Positions 3, 6, and 9 are red.
+- Single minutes: all off.
+
+## Tests and checks
+
+Run all automated tests:
+
+```bash
+npm test
+```
+
+Run tests in watch mode:
+
+```bash
+npm run test:watch
+```
+
+Run lint checks:
 
 ```bash
 npm run lint
 ```
 
-## Build for production
+Type-check and build the application:
 
 ```bash
 npm run build
 ```
 
-The build output is generated in the dist directory.
+Tests use Vitest, React Testing Library, user-event, and jest-dom.
+React tests run in jsdom.
 
-## Preview the production build
+The suite covers:
+
+- Each lamp-row rule and complete clock conversion.
+- Valid and invalid numeric boundaries.
+- Strict HH:mm:ss parsing.
+- Ordered lamp states and display updates.
+- Manual submission, validation errors, and recovery.
+- System-time updates and midnight rollover.
+- Mode switching and preservation of manual time.
+- Timer cleanup, including React Strict Mode.
+
+System-time tests control Date and interval timers while keeping
+interaction timers native.
+
+Browser checks cover actual lamp colors, responsive layout,
+keyboard controls, and focus visibility.
+
+## Production preview
+
+Build and serve the production output locally:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Open the local URL printed in the terminal.
+Open the URL printed in the terminal.
+The production build is generated in dist.
+
+## Design
+
+- src/domain: clock conversion and time parsing, independent of React.
+- src/components: lamp rendering and the manual input form.
+- src/hooks/useSystemTime.ts: local-time reading and timer lifecycle.
+- src/App.tsx: time-mode selection and application composition.
+- src/test/setup.ts: shared component-test setup and cleanup.
+
+Lamp states use a TypeScript union to restrict valid values.
+Domain constants name the quantities used by the clock rules.
+CSS classes control presentation.
+
+Clock state is derived from the displayed time rather than stored
+as a second source of truth.
+
+Each system-time tick reads the current local time instead of
+incrementing a counter. The interval is cleared when system mode
+is disabled or the component unmounts.
 
 ## Development approach
 
-Development follows the TDD cycle:
+Clock conversion, parsing, and UI behavior were developed through
+failing tests followed by implementation.
 
-1. Write and run a failing test for a specific behavior.
-2. Implement the smallest change that makes the test pass.
-3. Refactor when it improves clarity, keeping tests passing.
+Small commits record test additions, implementation, and purposeful
+refactoring. Later lifecycle tests verify existing cleanup behavior.
 
-Changes are recorded in small, descriptive commits.
-Clock conversion logic will remain independent of React components.
+## AI assistance
 
-## Run tests
-
-Tests use Vitest. React component tests use React Testing Library,
-user-event, and jest-dom in a jsdom environment.
-Component tests specify visible behavior and user interactions.
-
-Run the test suite once:
-
-```bash
-npm test
-```
-
-Run tests continuously during development:
-
-```bash
-npm run test:watch
-```
-
-Tests are named *.test.ts or *.test.tsx and kept beside the code
-they specify.
+AI assisted with planning, test suggestions, and troubleshooting.
